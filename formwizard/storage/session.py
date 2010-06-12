@@ -50,3 +50,21 @@ class SessionStorage(BaseStorage):
 
     def update_response(self, response):
         return response
+
+class DynamicSessionStorage(SessionStorage):
+    form_list_session_key = 'form_list'
+
+    def init_storage(self):
+        super(DynamicSessionStorage, self).init_storage()
+        self.request.session[self.prefix][self.form_list_session_key] = []
+        self.request.session.modified = True
+        return True
+
+    def get_form_list(self):
+        return self.request.session[self.prefix][self.form_list_session_key] or []
+
+    def set_form_list(self, form_list):
+        self.request.session[self.prefix][self.form_list_session_key] = form_list
+        self.request.session.modified = True
+        return True
+
